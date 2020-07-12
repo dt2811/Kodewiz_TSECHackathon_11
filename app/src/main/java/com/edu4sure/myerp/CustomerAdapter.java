@@ -16,6 +16,15 @@ import java.util.List;
 public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.MyViewHolder> {
     List<CreateCustomer> clist;
     Context mContext;
+    private OnItemClickListener mListener;
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+        void onAddToCartClick(int position);
+    }
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
+    }
+
 
     public CustomerAdapter(Context mContext,List<CreateCustomer> clist) {
         this.mContext = mContext;
@@ -27,7 +36,7 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.MyView
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v;
         v= LayoutInflater.from(mContext).inflate(R.layout.create_customer,parent,false);
-        MyViewHolder myViewHolder=new MyViewHolder(v);
+        MyViewHolder myViewHolder=new MyViewHolder(v,mListener);
         return myViewHolder;
 
     }
@@ -48,10 +57,40 @@ public class CustomerAdapter extends RecyclerView.Adapter<CustomerAdapter.MyView
     {
         private ImageView img;
         private TextView txt;
-        public MyViewHolder(@NonNull View itemView) {
+        private ImageButton ib;
+        public MyViewHolder(@NonNull View itemView,final OnItemClickListener listener) {
             super(itemView);
             img=itemView.findViewById(R.id.customerImg);
             txt=itemView.findViewById(R.id.customerTextView);
+            ib=itemView.findViewById(R.id.cartBtn);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(listener!=null)
+                    {
+                        int position=getAdapterPosition();
+                        if(position!=RecyclerView.NO_POSITION)
+                        {
+                            listener.onItemClick(position);
+                        }
+                    }
+
+                }
+            });
+
+            ib.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onAddToCartClick(position);
+                        }
+                    }
+                }
+            });
+
         }
     }
 }//class ends

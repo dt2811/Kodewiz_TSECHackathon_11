@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CustomerActivity extends AppCompatActivity {
@@ -28,6 +29,14 @@ public class CustomerActivity extends AppCompatActivity {
     CustomerAdapter cAdapter;
     private DrawerLayout drawer;
     Intent intent1;
+    public static int posn;
+
+    private Integer i[]=new Integer[]{R.drawable.smarttv,R.drawable.iphone,R.drawable.mouse,R.drawable.nokia,R.drawable.laptop,R.drawable.tv,R.drawable.washingmachine};
+    private String t[]=new String[]{"Smart TV","IPhone","Mouse","Nokia","Laptop","TV","Washing Machine"};
+
+    public List<Integer> imgList= Arrays.asList(i);
+    public List<String> prodList=Arrays.asList(t);
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -114,12 +123,28 @@ public class CustomerActivity extends AppCompatActivity {
         list.add(new CreateCustomer(R.drawable.nokia,"Nokia"));
         list.add(new CreateCustomer(R.drawable.laptop,"Laptop"));
         list.add(new CreateCustomer(R.drawable.tv,"TV"));
-        list.add(new CreateCustomer(R.drawable.laptop,"Laptop"));
+        list.add(new CreateCustomer(R.drawable.washingmachine,"Washing Machine"));
 
         recyclerView=(RecyclerView)findViewById(R.id.customerRV);
         cAdapter =new CustomerAdapter(this,list);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         recyclerView.setAdapter(cAdapter);
+
+        cAdapter.setOnItemClickListener(new CustomerAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                posn=position;
+                //Toast.makeText(getApplicationContext(),position+"",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onAddToCartClick(int position) {
+              CartManagerFragment.img.add(imgList.get(position));
+              CartManagerFragment.cTxt.add(prodList.get(position));
+              CartManagerFragment.cQty.add("1");
+              Toast.makeText(getApplicationContext(),"Added to cart!",Toast.LENGTH_SHORT).show();
+            }
+        });
     }//fill ends
 
     @Override
